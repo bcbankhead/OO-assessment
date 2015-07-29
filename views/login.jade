@@ -1,0 +1,31 @@
+extends layout
+
+block content
+  #main
+    .sub
+      .title
+        |typographer
+      .featurette
+    .nav
+      .nav_button_dis ♥
+      
+    #newForm
+      form(action="/login" method="POST")
+        .row
+          .errors
+            if message  
+              |#{message}
+        .row
+          label
+            .label  User Name
+            input.inputField(name="userName" type="text" placeholder="user name")
+        .row
+          label
+            .label  Password
+            input.inputField(name="password" id="password" type="text" placeholder="password")
+        .row
+          label
+            .label
+            input.button_submit(type="submit" value="Login")
+        
+    #featuredNew

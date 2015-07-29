@@ -4,11 +4,25 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
+require('dotenv').load();
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
+var key1 = (process.env.KEY1);
+var key2 = (process.env.KEY2);
+var key3 = (process.env.KEY3);
+
 var app = express();
+var cookieSession = require('cookie-session')
+
+//cookie setup
+app.enable('trust proxy')
+app.set('trust proxy', 1) // trust first proxy
+app.use(cookieSession({
+  name: 'session',
+  keys: [key1, key2, key3]
+}))
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -22,6 +36,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+var setUserNameLocal = function (req, res, next) {
+  res.locals.currentUser = req.session.user
+  next()
+}
+app.use(setUserNameLocal)
 app.use('/', routes);
 app.use('/users', users);
 

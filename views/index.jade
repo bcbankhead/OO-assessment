@@ -1,5 +1,13 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  #main
+    .sub
+      .title
+        |typographer
+      .featurette
+    .nav
+      a.nav_button(href="favorites") ♥
+      a.nav_button(href="new") +
+      a.nav_button(href="logout") logout
+    .featured

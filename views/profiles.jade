@@ -1,0 +1,15 @@
+extends layout
+
+block content
+  #main
+    .sub
+      .title
+        |typographer
+      .featurette
+    .nav
+      a.nav_button(href="/favorites/"+data._id) ♥
+      a.nav_button(href="/new/"+data._id) +
+      a.nav_button(href="/logout/"+data._id) logout
+    #newForm
+      |#{data.username}
+    .featured

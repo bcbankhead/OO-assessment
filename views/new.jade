@@ -1,0 +1,35 @@
+extends layout
+
+block content
+  #main
+    .sub
+      .title
+        |typographer
+      .featurette
+    .nav
+      a.nav_button(href="favorites") ♥
+      .nav_button_dis +
+      a.nav_button(href="logout") logout
+    #newForm
+      form(action="/new/"+user method="POST")
+        .row
+          label
+            .label  Artwork Name
+            input.inputField(name="artworkName" type="text" placeholder="artwork")
+        .row
+          label
+            .label  Artist
+            input.inputField(name="artworkArtist" type="text" placeholder="artist or outfit")
+        .row
+          label
+            .label Artwork URL
+            input.inputField(name="artworkURL" id="artworkURL" type="text" placeholder="url")
+        .row
+          label
+            .label Comment
+            textarea.inputText(name="artworkComment" placeholder="comment")
+        .row
+          label
+            .label
+            input.button_submit(type="submit" value="add artwork!")
+    #featuredNew
