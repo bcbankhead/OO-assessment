@@ -6,10 +6,13 @@ block content
       .title
         |typographer
       .featurette
-    .nav
-      a.nav_button(href="/favorites/"+data._id) ♥
-      a.nav_button(href="/new/"+data._id) +
-      a.nav_button(href="/logout/"+data._id) logout
+    include partials/nav
     #newForm
-      |#{data.username}
-    .featured
+      p #{data.username}'s artwork collection:
+      .userArtwork
+        if data.artworkId
+          each item in data.artworkId
+            .item 
+              a.artwork(href="/view/"+data._id+"/"+item.id)= item.name
+    
+      

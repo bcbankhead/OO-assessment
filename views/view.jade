@@ -1,0 +1,45 @@
+extends layout
+
+block content
+  #main
+    .sub
+      .title
+        |typographer
+      .featurette
+    include partials/nav
+    #newForm
+      .viewLabel Title
+      .viewText= artData.artworkName
+      
+      .viewLabel Original Designer
+      .viewText= artData.artworkArtist
+      
+      .viewLabel Uploaded by:
+      .viewText= artData.uploadedBy
+      
+      .viewLabel Note:
+      .viewText= artData.artworkNote
+      
+      .viewLabel
+        form(action="/comment/"+id+"/"+artId method="POST")
+          .row
+            label
+              .label Add a comment
+              textarea.inputComment(name="comment" placeholder="comment")
+            input.button_submit(type="submit" value="Post")
+      
+      .viewLabel Comments:
+      .viewText 
+        each item in artData.artworkComments
+          .commenter artData.artworkComments.name
+          .commenter artData.artworkComments.comment
+      
+    .featured(style='background-image: url('+artData.artworkURL+'); background-size: 300px')
+      a.featuredLink(href=artData.artworkURL)
+      .like 
+        if liked === 0
+          a#like_button(href="/like/"+id+"/"+artData._id) &#9734;
+        else
+          a#like_button(href="/like/"+id+"/"+artData._id) &#9733;
+        = artData.likedby.length
+      

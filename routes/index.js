@@ -14,12 +14,12 @@ var checkUser = function(req, res, next) {
 };
 /* GET home page. */
 router.get('/', checkUser, function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  res.render('index', { page: 'all', title: 'Express' });
 });
 
 router.get('/new/:id', function(req, res, next) {
   var id = req.params.id
-  res.render('new', { user: id });
+  res.render('new', { page: 'new', id: id });
 });
 
 router.post('/new/:id', function(req, res, next) {
@@ -27,17 +27,21 @@ router.post('/new/:id', function(req, res, next) {
       artworkObj.artworkName = req.body.artworkName;
       artworkObj.artworkArtist = req.body.artworkArtist;
       artworkObj.artworkURL = req.body.artworkURL;
-      artworkObj.artworkComment = req.body.artworkComment;
+      artworkObj.artworkNote = req.body.artworkNote;
 
   var id = req.params.id;
-  console.log("*********",id);
-  functions.writeNew(id,artworkObj).then(function () {
-    res.redirect('/');
+  functions.findProfile(id).then(function(dataset){
+    console.log(dataset);
+    var uploadedBy = dataset.username;
+    functions.writeNew(id,uploadedBy,artworkObj).then(function () {
+      res.redirect('/profiles/'+ id);
+    })
   })
 });
 
+
 router.get('/login', function(req, res, next) {
-  res.render('login', { title: 'Express' });
+  res.render('login', { page: 'none', title: 'Express' });
 });
 
 router.post('/login', function(req, res, next){
@@ -54,7 +58,7 @@ router.post('/login', function(req, res, next){
           res.redirect('/profiles/'+ id);
         });
     } else if (result.status === 'failed'){
-      res.render('login', {message: "Username or password incorrect."})
+      res.render('login', {page: 'none', message: "Username or password incorrect."})
     }
   });
 });
@@ -62,7 +66,7 @@ router.post('/login', function(req, res, next){
 
 //Signup
 router.get('/signup', function(req, res, next) {
-  res.render('signup', { title: 'Express' });
+  res.render('signup', { page: 'none', title: 'Express' });
 });
 
 router.post('/signup', function(req, res, next){
@@ -75,7 +79,7 @@ router.post('/signup', function(req, res, next){
       if (errorList.errorStatus > 0){
         var returnValues = {}
         returnValues.username = currentUser
-        res.render('signup', { errors: errorList.errors, posted: returnValues });
+        res.render('signup', { page: 'none', errors: errorList.errors, posted: returnValues });
       }
 
       if (errorList.errorStatus === 0){
@@ -91,13 +95,62 @@ router.post('/signup', function(req, res, next){
 })
 
 router.get('/profiles/:id', function(req, res, next) {
-  var userId = req.params.id
-  functions.findProfile(userId).then(function(dataset){
+  var id = req.params.id
+  functions.findProfile(id).then(function(dataset){
     console.log(dataset);
-  res.render('profiles', { title: 'Express', data: dataset });
+  res.render('profiles', { page: 'profile', id: id, data: dataset });
   })
+})
 
+router.get('/view/:id/:artId', function(req, res, next) {
+  var id = req.params.id;
+  var artId = req.params.artId;
+  functions.findProfile(id).then(function(dataset){
+    console.log(dataset);
+    var liked = functions.isLiked(dataset.liked,artId)
+
+    functions.findArtwork(artId).then(function(artData){
+      console.log("**************",artData);
+    res.render('view', { page: 'view', id: id, liked: liked, artData: artData });
+    })
+  })
 });
+
+router.post('/comment/:id/:artId', function(req, res, next) {
+  var id = req.params.id;
+  var artId = req.params.artId;
+  var comment = req.body.comment
+  console.log("here");
+  functions.findProfile(id).then(function(dataset){
+    console.log(dataset);
+    var commenter = dataset.username;
+    functions.writeComment(id,commenter,comment,artId,artworkObj).then(function () {
+      //res.redirect('/profiles/'+ id);
+    })
+  })
+});
+
+router.post('/like/:id/:artId', function(req, res, next) {
+  var id = req.params.id;
+  var artId = req.params.artId;
+  console.log(id);
+  console.log(artId);
+  functions.findProfile(id).then(function(dataset){
+    console.log(dataset);
+    var user = dataset.username;
+    functions.addLike(id,user,artId).then(function () {
+      //res.redirect('/profiles/'+ id);
+    })
+  })
+});
+
+router.get('/gallery/:id', function(req, res, next) {
+  var id = req.params.id
+  functions.gallery().then(function(dataset){
+    console.log(dataset);
+  res.render('gallery', { page: 'all', id: id, data: dataset });
+  })
+})
 
 
 module.exports = router;

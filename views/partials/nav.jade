@@ -1,0 +1,21 @@
+.nav
+  a.nav_button(href="/gallery/"+id) &#9783;
+  if page == "profile" || page == "none"
+    .nav_button_dis &#9776;
+  else
+    a.nav_button(href="/profiles/"+id) &#9776;
+    
+  if page == "favorites" || page == "none"
+    .nav_button_dis &#9829;
+  else
+    a.nav_button(href="/favorites/"+id) &#9829;
+  
+  if page == "new" || page == "none"
+    .nav_button_dis +
+  else
+    a.nav_button(href="/new/"+id) +
+    
+  if page == "logout" || page == "none"
+    a.nav_button(href="/login/") login
+  else
+    a.nav_button(href="/logout/"+id) logout

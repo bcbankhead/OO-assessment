@@ -1,0 +1,13 @@
+extends layout
+
+block content
+  #main
+    .sub
+      .title
+        |typographer
+      .featurette
+    include partials/nav
+    #newForm
+      each item in data
+        .thumbNail(style='background-image: url('+item.artworkURL+'); background-size: 100px')
+          a.thumbNailLink(href="/view/"+id+"/"+item._id)

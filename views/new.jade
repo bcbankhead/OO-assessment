@@ -6,12 +6,9 @@ block content
       .title
         |typographer
       .featurette
-    .nav
-      a.nav_button(href="favorites") ♥
-      .nav_button_dis +
-      a.nav_button(href="logout") logout
+    include partials/nav
     #newForm
-      form(action="/new/"+user method="POST")
+      form(action="/new/"+id method="POST")
         .row
           label
             .label  Artwork Name
@@ -27,7 +24,7 @@ block content
         .row
           label
             .label Comment
-            textarea.inputText(name="artworkComment" placeholder="comment")
+            textarea.inputText(name="artworkNote" placeholder="comment")
         .row
           label
             .label
