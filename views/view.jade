@@ -21,7 +21,7 @@ block content
       .viewText= artData.artworkNote
       
       .viewLabel
-        form(action="/comment/"+id+"/"+artId method="POST")
+        form(action="/comment/"+id+"/"+artData._id method="POST")
           .row
             label
               .label Add a comment
@@ -31,8 +31,8 @@ block content
       .viewLabel Comments:
       .viewText 
         each item in artData.artworkComments
-          .commenter artData.artworkComments.name
-          .commenter artData.artworkComments.comment
+          .commenter= item.username
+          .commenter= item.comment
       
     .featured(style='background-image: url('+artData.artworkURL+'); background-size: 300px')
       a.featuredLink(href=artData.artworkURL)
