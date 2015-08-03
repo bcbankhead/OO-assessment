@@ -157,5 +157,4 @@ router.get('/gallery/:id', function (req, res, next) {
   })
 })
 
-
 module.exports = router;
