@@ -15,6 +15,7 @@ if (document.getElementById('artworkURL')){
 }
 
 $('#like_button').on('click', function(e) {
+
           // Stop the browser from doing anything else
           e.preventDefault();
           // Do an AJAX post
