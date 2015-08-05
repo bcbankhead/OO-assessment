@@ -24,9 +24,10 @@ block content
         .row
           label
             .label Comment
-            textarea.inputText(name="artworkNote" value=artData.artworkNote)
+            textarea.inputText(name="artworkNote")= artData.artworkNote
         .row
           label
             .label
             input.button_submit(type="submit" value="Submit Edits")
-    #featuredNew
+    #featuredNew(style='background-image: url('+artData.artworkURL+'); background-size: 300px')
+      a.featuredLink(href=artData.artworkURL)

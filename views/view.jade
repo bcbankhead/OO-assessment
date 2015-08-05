@@ -33,7 +33,8 @@ block content
         each item in artData.artworkComments
           .commenter= item.username
           .commenter= item.comment
-          a(href="/comment/"+id+"/"+artData._id+"/"+item.commentId+"/rmc") X
+          if id === item.commenter_id
+            a(href="/comment/"+id+"/"+artData._id+"/"+item.commentId+"/rmc") X
       
     .featured(style='background-image: url('+artData.artworkURL+'); background-size: 300px')
       a.featuredLink(href=artData.artworkURL)

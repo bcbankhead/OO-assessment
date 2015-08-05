@@ -66,6 +66,11 @@ router.post('/login', function (req, res, next) {
   });
 });
 
+router.get('/logout', function (req, res, next) {
+    req.session.user = null;
+  res.render('login', { page: 'none', title: 'Express' });
+});
+
 
 //Signup
 router.get('/signup', function (req, res, next) {
@@ -124,7 +129,6 @@ router.get('/edit/:id/:artId', function (req, res, next) {
   functions.findProfile(id,db.Users).then( function (dataset) {
     var liked = functions.isLiked(dataset.liked,artId)
     functions.findArtwork(artId,db.Artwork).then( function (artData) {
-      console.log("**************",artData);
     res.render('edit', { page: 'view', id: id, liked: liked, artData: artData });
     })
   })
@@ -143,7 +147,6 @@ router.post('/edit/:id/:artId', function (req, res, next) {
         artworkObj.artworkComments = [];
         artworkObj.likedby = [];
         artworkObj.uploadedBy = dataset.username;
-    console.log(artworkObj);
     functions.updateArtwork(id,artId,artworkObj,db.Users,db.Artwork)
     .then( function (result) {
       res.redirect('/profiles/'+ id);
