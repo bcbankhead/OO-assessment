@@ -1,0 +1,32 @@
+extends layout
+
+block content
+  #main
+    .sub
+      .title
+        |typographer
+      .featurette
+    include partials/nav
+    #newForm
+      form(action="/edit/"+id+"/"+artData._id method="POST")
+        .row
+          label
+            .label  Artwork Name
+            input.inputField(name="artworkName" type="text" value=artData.artworkName)
+        .row
+          label
+            .label  Artist
+            input.inputField(name="artworkArtist" type="text" value=artData.artworkArtist)
+        .row
+          label
+            .label Artwork URL
+            input.inputField(name="artworkURL" id="artworkURL" type="text" value=artData.artworkURL)
+        .row
+          label
+            .label Comment
+            textarea.inputText(name="artworkNote" value=artData.artworkNote)
+        .row
+          label
+            .label
+            input.button_submit(type="submit" value="Submit Edits")
+    #featuredNew

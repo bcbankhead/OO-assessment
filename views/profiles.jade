@@ -14,5 +14,8 @@ block content
           each item in data.artworkId
             .item 
               a.artwork(href="/view/"+data._id+"/"+item.id)= item.name
-    
+            .edit
+              a.artwork(href="/edit/"+data._id+"/"+item.id) edit
+            .delete
+              a.artwork(href="/delete/"+data._id+"/"+item.id) x
       
