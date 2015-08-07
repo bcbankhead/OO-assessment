@@ -40,3 +40,24 @@ $('#like_button').on('click', function(e) {
             }
           });
         });
+
+if (document.getElementById('delete')){
+  var dele = document.getElementById('delete');
+  var deleteButton = document.getElementById('deleteButton');
+  var deleteHref = dele.value
+  deleteButton.addEventListener('click', function (event) {
+    console.log("here");
+    var confirmation = document.getElementById('confirm')
+      confirmation.style.display = "inline-block";
+
+      var yes = document.getElementById('confirm-yes')
+      yes.addEventListener('click', function () {
+        window.location = deleteHref;
+      })
+
+      var no = document.getElementById('confirm-no')
+      no.addEventListener('click', function () {
+        confirmation.style.display = "none"
+      })
+  })
+}

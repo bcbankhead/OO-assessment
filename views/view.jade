@@ -34,7 +34,11 @@ block content
           .commenter= item.username
           .commenter= item.comment
           if id === item.commenter_id
-            a(href="/comment/"+id+"/"+artData._id+"/"+item.commentId+"/rmc") X
+            input(type = 'hidden' value="/comment/"+id+"/"+artData._id+"/"+item.commentId+"/rmc" id="delete")
+            #deleteButton X
+            #confirm 
+              #confirm-yes yes
+              #confirm-no no
       
     .featured(style='background-image: url('+artData.artworkURL+'); background-size: 300px')
       a.featuredLink(href=artData.artworkURL)
