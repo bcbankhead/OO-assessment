@@ -15,7 +15,7 @@ var checkUser = function (req, res, next) {
 };
 /* GET home page. */
 router.get('/', checkUser, function (req, res, next) {
-  res.render('index', { page: 'all', title: 'Express' });
+  res.render('index', { page: 'gallery', title: 'Express' });
 });
 
 router.get('/new/:id', function (req, res, next) {
@@ -112,13 +112,15 @@ router.get('/profiles/:id', function (req, res, next) {
   })
 })
 
+
+
 router.get('/view/:id/:artId', function (req, res, next) {
   var id = req.params.id;
   var artId = req.params.artId;
   functions.findProfile(id,db.Users).then( function (dataset) {
     var liked = functions.isLiked(dataset.liked,artId)
     functions.findArtwork(artId,db.Artwork).then( function (artData) {
-    res.render('view', { page: 'view', id: id, liked: liked, artData: artData });
+    res.render('view', { page: 'view', user: req.session.user, id: id, liked: liked, artData: artData });
     })
   })
 });
@@ -166,19 +168,19 @@ router.get('/delete/:id/:artId', function (req, res, next) {
 router.post('/comment/:id/:artId', function (req, res, next) {
   var id = req.params.id;
   var artId = req.params.artId;
-  var comment = req.body.comment
+  var comment = req.body.comment;
   functions.findProfile(id,db.Users).then( function (dataset) {
     var commenter = dataset.username;
     var liked = functions.isLiked(dataset.liked,artId);
     functions.writeComment(id,commenter,comment,artId,db.Artwork).then(function (result) {
       functions.findArtwork(artId,db.Artwork).then( function (artData) {
-        res.redirect('/view/'+id+'/'+artId);
+        //res.redirect('/view/'+id+'/'+artId);
       })
     })
   })
 });
 
-router.get('/comment/:id/:artId/:cId/rmc', function (req, res, next) {
+router.post('/comment/:id/:artId/:cId/rmc', function (req, res, next) {
   var id = req.params.id;
   var artId = req.params.artId;
   var commentId = req.params.cId
@@ -186,9 +188,8 @@ router.get('/comment/:id/:artId/:cId/rmc', function (req, res, next) {
     var commenter = dataset.username;
     var liked = functions.isLiked(dataset.liked,artId);
     functions.removeComment(id,commenter,commentId,artId,db.Artwork).then(function (result) {
-      console.log("here2");
       functions.findArtwork(artId,db.Artwork).then( function (artData) {
-        res.redirect('/view/'+id+'/'+artId);
+        //res.redirect('/view/'+id+'/'+artId);
       })
     })
   })
@@ -198,8 +199,6 @@ router.get('/comment/:id/:artId/:cId/rmc', function (req, res, next) {
 router.post('/like/:id/:artId', function (req, res, next) {
   var id = req.params.id;
   var artId = req.params.artId;
-  console.log(id);
-  console.log(artId);
   functions.findProfile(id,db.Users).then( function (dataset) {
     var user = dataset.username;
     functions.addLike(id,user,artId,db.Users,db.Artwork).then( function (result) {
@@ -208,12 +207,34 @@ router.post('/like/:id/:artId', function (req, res, next) {
   })
 });
 
+router.post('/unlike/:id/:artId', function (req, res, next) {
+  var id = req.params.id;
+  var artId = req.params.artId;
+  functions.findProfile(id,db.Users).then( function (dataset) {
+    var user = dataset.username;
+    functions.removeLike(id,user,artId,db.Users,db.Artwork).then( function (result) {
+      //res.redirect('/profiles/'+ id);
+    })
+  })
+});
+
+
 router.get('/gallery/:id', function (req, res, next) {
   var id = req.params.id
   functions.gallery(db.Artwork).then( function (dataset) {
-    console.log(dataset);
-  res.render('gallery', { page: 'all', id: id, data: dataset });
+  res.render('gallery', { page: 'gallery', id: id, data: dataset });
   })
 })
+
+router.get('/favorites/:id', function (req, res, next) {
+  var id = req.params.id
+  functions.findProfile(id,db.Users).then( function (userData) {
+    functions.favorites(db.Artwork, userData.liked,id).then( function (artData) {
+      res.render('gallery', { page: 'favorites', id: id, data: artData });
+    })
+  })
+})
+
+
 
 module.exports = router;

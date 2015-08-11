@@ -21,31 +21,44 @@ block content
       .viewText= artData.artworkNote
       
       .viewLabel
-        form(action="/comment/"+id+"/"+artData._id method="POST")
-          .row
-            label
-              .label Add a comment
-              textarea.inputComment(name="comment" placeholder="comment")
-            input.button_submit(type="submit" value="Post")
+        input(id="commentURL" type="hidden" value="/comment/"+id+"/"+artData._id)
+        .row
+          label
+            .label Add a comment
+            textarea#inputComment(name="comment" placeholder="comment")
+          #postComment Post
       
       .viewLabel Comments:
-      .viewText 
-        each item in artData.artworkComments
+      #newComment
+        #newCommentRow
+          #newCommenter #{user} 909090
+          #newCommentText          
+      each item, i in artData.artworkComments
+        .commentList
           .commenter= item.username
-          .commenter= item.comment
           if id === item.commenter_id
-            input(type = 'hidden' value="/comment/"+id+"/"+artData._id+"/"+item.commentId+"/rmc" id="delete")
-            #deleteButton X
-            #confirm 
-              #confirm-yes yes
-              #confirm-no no
+            .deleteButton X
+          else 
+            .deleteButtonHide
+            .deleteButton
+          .commentItem= item.comment
+          if id === item.commenter_id
+            input(type = 'hidden' value="/comment/"+id+"/"+artData._id+"/"+item.commentId+"/rmc" class="delete")
+            .confirm Remove Comment?:
+              .confirm-yes yes
+              .confirm-no no
       
     .featured(style='background-image: url('+artData.artworkURL+'); background-size: 300px')
       a.featuredLink(href=artData.artworkURL)
       .like 
         if liked === 0
           a#like_button(href="/like/"+id+"/"+artData._id) &#9734;
+          #likedHidden notLiked
+        else if liked === 1
+          a#unLike_button(href="/unlike/"+id+"/"+artData._id) &#9733;
+          #likedHidden liked
         else
           a#like_button(href="/like/"+id+"/"+artData._id) &#9733;
+          #likedHidden liked
         = artData.likedby.length
       

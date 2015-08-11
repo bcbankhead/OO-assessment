@@ -206,7 +206,7 @@ margin-top:15px;
   resize: none;
 }
 
-.inputComment {
+#inputComment {
   display:inline-block;
   width: 250px;
   height:50px;
@@ -249,6 +249,17 @@ margin-top:15px;
   text-decoration: none;
 }
 
+#unLike_button {
+  display:inline-block;
+  height:30px;
+  margin-top:7px;
+  padding:5px;
+  font-size:22px;
+  font-weight: bolder;
+  color:rgb(150, 150, 180);
+  text-decoration: none;
+}
+
 .edit {
   display:inline-block;
   height:15px;
@@ -262,30 +273,183 @@ margin-top:15px;
   margin-left:10px;
 }
 
-#confirm {
+.confirm {
   display:none;
   height:20px;
   width:250px;
+  font-size: 12px;
+  height:15px;
 }
 
-#confirm-yes {
+.confirm-yes {
   float:right;
+  cursor: pointer;
   display:inline-block;
-  height:20px;
+  font-size: 12px;
+  height:15px;
   width:50px;
-  margin-left: 5px;
+  margin-left: 3px;
   background-color: rgb(255, 255, 255);
   border:1px solid red;
   text-align: center;
+  color: rgb(255, 0, 0);
+  transition: all .3s ease;
 }
 
-#confirm-no {
+.confirm-yes:hover {
   float:right;
+  cursor: pointer;
   display:inline-block;
-  height:20px;
+  font-size: 12px;
+  height:15px;
   width:50px;
-  margin-left: 5px;
+  margin-left: 3px;
+  background-color: rgb(255, 190, 190);
+  border:1px solid red;
+  text-align: center;
+  color: rgb(255, 0, 0);
+}
+
+
+.confirm-no {
+  float:right;
+  cursor: pointer;
+  display:inline-block;
+  font-size: 12px;
+  height:15px;
+  width:50px;
+  margin-left: 3px;
   background-color: rgb(255, 255, 255);
   border:1px solid black;
   text-align: center;
+  color: rgb(180,180,180);
+  transition: all .3s ease;
+}
+
+.confirm-no:hover {
+  float:right;
+  cursor: pointer;
+  display:inline-block;
+  font-size: 12px;
+  height:15px;
+  width:50px;
+  margin-left: 3px;
+  background-color: rgb(210, 215, 210);
+  border:1px solid black;
+  text-align: center;
+  color: rgb(180,180,180);
+}
+
+
+.deleteButton {
+  border:1px solid black;
+  text-align: center;
+  cursor: pointer;
+  width:18px;
+  height:15px;
+  display:inline-block;
+  background-color: rgb(180, 0, 0);
+  font-size: 14px;
+  height:18px;
+  color: rgb(180, 0, 0);
+  transition: all .3s ease;
+}
+
+.deleteButton:hover {
+  border:1px solid black;
+  text-align: center;
+  cursor: pointer;
+  width:18px;
+  height:15px;
+  display:inline-block;
+  background-color: rgb(180, 0, 0);
+  font-size: 14px;
+  height:18px;
+  color: rgb(255, 0, 0);
+}
+
+.deleteButtonHide {
+  position:absolute;
+  border:0px solid black;
+  text-align: center;
+  width:19px;
+  height:16px;
+  display:inline-block;
+  background-color: rgb(255, 255, 255);
+  font-size: 14px;
+  height:18px;
+  color: rgb(180, 0, 0);
+  transition: all .3s ease;
+}
+
+.commenter {
+  border:0px solid black;
+  display:inline-block;
+  width:227px;
+  font-size: 14px;
+  height:18px;
+  color: #BBB;
+}
+
+.commentItem {
+  font-size: 12px;
+  color: #888;
+}
+
+.commentList {
+  border:0px solid black;
+  margin-bottom:15px;
+}
+
+#loggedin {
+  color:#F00
+}
+
+#newCommentRow {
+  border: 0px solid black;
+  display:none;
+}
+
+#newComment {
+  border:0px solid black;
+}
+
+#newCommentText {
+  border:0px solid black;
+}
+
+
+#newCommenter {
+  border:0px solid black;
+  width:227px;
+  font-size: 14px;
+  height:18px;
+  color: #BBB;
+}
+
+#likedHidden {
+  display: none;
+}
+
+#header {
+  position: absolute;
+  top:0px;
+  left:5px;
+  width:400px;
+  border-right: 0px solid black;
+  font-size: 60px;
+  font-weight: bold;
+  color: #BBB;
+}
+
+#headerBox {
+  position:relative;
+  top:0px;
+  left:0px;
+  width:600px;
+  height:50px;
+  margin-left:-15px;
+  border-bottom: 0px solid black;
+  overflow:hidden;
+  background-color: rgb(255, 255, 255);
 }
