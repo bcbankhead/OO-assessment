@@ -31,7 +31,7 @@ block content
       .viewLabel Comments:
       #newComment
         #newCommentRow
-          #newCommenter #{user} 909090
+          #newCommenter #{user}
           #newCommentText          
       each item, i in artData.artworkComments
         .commentList
@@ -50,15 +50,16 @@ block content
       
     .featured(style='background-image: url('+artData.artworkURL+'); background-size: 300px')
       a.featuredLink(href=artData.artworkURL)
+      #likeCount= artData.likedby.length
       .like 
         if liked === 0
-          a#like_button(href="/like/"+id+"/"+artData._id) &#9734;
+          a#like_button(href="/"+id+"/"+artData._id) &#9734;
           #likedHidden notLiked
         else if liked === 1
-          a#unLike_button(href="/unlike/"+id+"/"+artData._id) &#9733;
+          a#like_button(href="/"+id+"/"+artData._id) &#9733;
           #likedHidden liked
         else
-          a#like_button(href="/like/"+id+"/"+artData._id) &#9733;
+          a#like_button(href="/"+id+"/"+artData._id) &#9733;
           #likedHidden liked
-        = artData.likedby.length
+      
       

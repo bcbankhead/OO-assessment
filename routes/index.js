@@ -196,7 +196,7 @@ router.post('/comment/:id/:artId/:cId/rmc', function (req, res, next) {
 });
 
 
-router.post('/like/:id/:artId', function (req, res, next) {
+router.post('/:id/:artId/like/', function (req, res, next) {
   var id = req.params.id;
   var artId = req.params.artId;
   functions.findProfile(id,db.Users).then( function (dataset) {
@@ -207,7 +207,7 @@ router.post('/like/:id/:artId', function (req, res, next) {
   })
 });
 
-router.post('/unlike/:id/:artId', function (req, res, next) {
+router.post('/:id/:artId/unlike/', function (req, res, next) {
   var id = req.params.id;
   var artId = req.params.artId;
   functions.findProfile(id,db.Users).then( function (dataset) {
