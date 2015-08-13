@@ -14,10 +14,19 @@ block content
       .userArtwork
         if data.artworkId
           each item in data.artworkId
-            .item 
-              a.artwork(href="/view/"+data._id+"/"+item.id)= item.name
-            .edit
-              a.artwork(href="/edit/"+data._id+"/"+item.id) edit
-            .delete
-              a.artwork(href="/delete/"+data._id+"/"+item.id) x
+           .profileEntry
+              .profileItem 
+                a.artwork(href="/view/"+data._id+"/"+item.id)= item.name
+              .artURLs= item.url
+              .profileEdit
+                a.artwork(href="/edit/"+data._id+"/"+item.id) edit
+              .deleteButton
+                a.profileDelete(href="/delete/"+data._id+"/"+item.id) X
+        //- .hidden
+        //-   each item in urls
+        //-     .artworks
+        //-       span=item.artId
+        //-       span=item.url
+          
+      #featuredProfile
       

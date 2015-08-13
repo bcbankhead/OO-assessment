@@ -25,20 +25,9 @@ router.get('/new/:id', function (req, res, next) {
 
 router.post('/new/:id', function (req, res, next) {
   var id = req.params.id;
-  functions.findProfile(id,db.Users)
-  .then( function (dataset) {
-    var artworkObj = {};
-        artworkObj.artworkName = req.body.artworkName;
-        artworkObj.artworkArtist = req.body.artworkArtist;
-        artworkObj.artworkURL = req.body.artworkURL;
-        artworkObj.artworkNote = req.body.artworkNote;
-        artworkObj.artworkComments = [];
-        artworkObj.likedby = [];
-        artworkObj.uploadedBy = dataset.username;
-    functions.addRecord(id,artworkObj,db.Users,db.Artwork)
-    .then( function (result) {
-      res.redirect('/profiles/'+ id);
-    })
+  functions.new(id,req.body.artworkName,req.body.artworkArtist,req.body.artworkURL,req.body.artworkNote)
+  .then(function (result) {
+    res.redirect('/profiles/'+ id);
   })
 });
 
@@ -82,6 +71,7 @@ router.post('/signup', function (req, res, next) {
   var password = req.body.password;
   var confirm = req.body.confirm;
 
+ //refactor
   functions.duplicates(currentUser,db.Users)
   .then( function (duplicate) {
       var errorList = functions.validate(currentUser, password, confirm, duplicate);
@@ -108,7 +98,10 @@ router.post('/signup', function (req, res, next) {
 router.get('/profiles/:id', function (req, res, next) {
   var id = req.params.id
   functions.findProfile(id,db.Users).then( function (dataset) {
-  res.render('profiles', { page: 'profile', id: id, data: dataset });
+    functions.profileArt(db.Artwork,dataset.urls).then(function (urls) {
+      var result = functions.combiner(dataset.data,urls)
+      res.render('profiles', { page: 'profile', id: id, data: result });
+    })
   })
 })
 
@@ -118,7 +111,7 @@ router.get('/view/:id/:artId', function (req, res, next) {
   var id = req.params.id;
   var artId = req.params.artId;
   functions.findProfile(id,db.Users).then( function (dataset) {
-    var liked = functions.isLiked(dataset.liked,artId)
+    var liked = functions.isLiked(dataset.data.liked,artId)
     functions.findArtwork(artId,db.Artwork).then( function (artData) {
     res.render('view', { page: 'view', user: req.session.user, id: id, liked: liked, artData: artData });
     })
@@ -129,7 +122,7 @@ router.get('/edit/:id/:artId', function (req, res, next) {
   var id = req.params.id;
   var artId = req.params.artId;
   functions.findProfile(id,db.Users).then( function (dataset) {
-    var liked = functions.isLiked(dataset.liked,artId)
+    var liked = functions.isLiked(dataset.data.liked,artId)
     functions.findArtwork(artId,db.Artwork).then( function (artData) {
     res.render('edit', { page: 'view', id: id, liked: liked, artData: artData });
     })
@@ -137,22 +130,9 @@ router.get('/edit/:id/:artId', function (req, res, next) {
 });
 
 router.post('/edit/:id/:artId', function (req, res, next) {
-  var id = req.params.id;
-  var artId = req.params.artId;
-  functions.findProfile(id,db.Users)
-  .then( function (dataset) {
-    var artworkObj = {};
-        artworkObj.artworkName = req.body.artworkName;
-        artworkObj.artworkArtist = req.body.artworkArtist;
-        artworkObj.artworkURL = req.body.artworkURL;
-        artworkObj.artworkNote = req.body.artworkNote;
-        artworkObj.artworkComments = [];
-        artworkObj.likedby = [];
-        artworkObj.uploadedBy = dataset.username;
-    functions.updateArtwork(id,artId,artworkObj,db.Users,db.Artwork)
-    .then( function (result) {
-      res.redirect('/profiles/'+ id);
-    })
+  functions.edit(req.params.id,req.params.artId,req.body.artworkName,req.body.artworkArtist,req.body.artworkURL,req.body.artworkNote)
+  .then(function (result) {
+      res.redirect('/profiles/'+ req.params.id);
   })
 });
 
@@ -164,34 +144,25 @@ router.get('/delete/:id/:artId', function (req, res, next) {
   })
 });
 
-
+//Comment
 router.post('/comment/:id/:artId', function (req, res, next) {
+  console.log(req.body);
   var id = req.params.id;
   var artId = req.params.artId;
   var comment = req.body.comment;
+  //refactor
   functions.findProfile(id,db.Users).then( function (dataset) {
-    var commenter = dataset.username;
-    var liked = functions.isLiked(dataset.liked,artId);
+    var commenter = dataset.data.username;
+    var liked = functions.isLiked(dataset.data.liked,artId);
     functions.writeComment(id,commenter,comment,artId,db.Artwork).then(function (result) {
-      functions.findArtwork(artId,db.Artwork).then( function (artData) {
-        //res.redirect('/view/'+id+'/'+artId);
-      })
+      res.json(result);
     })
   })
 });
 
 router.post('/comment/:id/:artId/:cId/rmc', function (req, res, next) {
-  var id = req.params.id;
-  var artId = req.params.artId;
-  var commentId = req.params.cId
-  functions.findProfile(id,db.Users).then( function (dataset) {
-    var commenter = dataset.username;
-    var liked = functions.isLiked(dataset.liked,artId);
-    functions.removeComment(id,commenter,commentId,artId,db.Artwork).then(function (result) {
-      functions.findArtwork(artId,db.Artwork).then( function (artData) {
-        //res.redirect('/view/'+id+'/'+artId);
-      })
-    })
+  functions.removeComment(req.params.id,req.params.artId,req.params.cId).then(function (result) {
+    res.json({})
   })
 });
 
@@ -200,9 +171,11 @@ router.post('/:id/:artId/like/', function (req, res, next) {
   var id = req.params.id;
   var artId = req.params.artId;
   functions.findProfile(id,db.Users).then( function (dataset) {
-    var user = dataset.username;
+    var user = dataset.data.username;
     functions.addLike(id,user,artId,db.Users,db.Artwork).then( function (result) {
-      //res.redirect('/profiles/'+ id);
+      console.log("here1");
+      console.log(result);
+      res.json(result);
     })
   })
 });
@@ -211,9 +184,11 @@ router.post('/:id/:artId/unlike/', function (req, res, next) {
   var id = req.params.id;
   var artId = req.params.artId;
   functions.findProfile(id,db.Users).then( function (dataset) {
-    var user = dataset.username;
+    var user = dataset.data.username;
     functions.removeLike(id,user,artId,db.Users,db.Artwork).then( function (result) {
-      //res.redirect('/profiles/'+ id);
+      console.log("here2");
+      console.log(result);
+      res.json(result);
     })
   })
 });
@@ -222,19 +197,17 @@ router.post('/:id/:artId/unlike/', function (req, res, next) {
 router.get('/gallery/:id', function (req, res, next) {
   var id = req.params.id
   functions.gallery(db.Artwork).then( function (dataset) {
-  res.render('gallery', { page: 'gallery', id: id, data: dataset });
+    res.render('gallery', { page: 'gallery', id: id, data: dataset });
   })
 })
 
 router.get('/favorites/:id', function (req, res, next) {
   var id = req.params.id
-  functions.findProfile(id,db.Users).then( function (userData) {
-    functions.favorites(db.Artwork, userData.liked,id).then( function (artData) {
+  functions.findProfile(id,db.Users).then( function (dataset) {
+    functions.favorites(db.Artwork, dataset.data.liked,id).then( function (artData) {
       res.render('gallery', { page: 'favorites', id: id, data: artData });
     })
   })
 })
-
-
 
 module.exports = router;

@@ -30,9 +30,10 @@ block content
       
       .viewLabel Comments:
       #newComment
-        #newCommentRow
-          #newCommenter #{user}
-          #newCommentText          
+        .newCommentRow
+          .newCommenter #{user}
+          .newCommentText          
+      #dividerDiv
       each item, i in artData.artworkComments
         .commentList
           .commenter= item.username
