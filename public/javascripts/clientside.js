@@ -3,8 +3,10 @@ window.addEventListener('DOMContentLoaded', function () {
   var main = document.getElementById('main')
   var content = document.getElementById('newForm')
       main.style.height = window.innerHeight + "px";
-      content.style.height = (window.innerHeight - 50) + "px";
+      content.style.height = (window.innerHeight - 150) + "px";
       content.style.overflow = "scroll";
+      console.log(main);
+      console.log(content);
 });
 
 //update artwork preview div
@@ -36,35 +38,45 @@ $('#postComment').on('click', function(e) {
   e.preventDefault();
   var commentURL = document.getElementById('commentURL').value
   var commentTxt = document.getElementById('inputComment')
-  var num = 0;
+  var newCommentRow = document.getElementsByClassName('newCommentRow')
+  var newCommenter = document.getElementsByClassName('newCommenter')
+  var newCommentText = document.getElementsByClassName('newCommentText')
+  var deleteButtons = document.getElementsByClassName('deleteButton')
+  newCommentText[0].innerHTML = commentTxt.value;
+  var cloneRow = newCommentRow[0]
+      cloneCommenter = newCommenter[0]
+      cloneCommentText = newCommentText[0]
+      cloneDelete = deleteButtons[1]
+      $(deleteButtons[0]).hide()
+  $(cloneRow).clone().insertAfter("#dividerDiv").fadeIn("slow")
+  console.log(deleteButtons[1]);
+  console.log(cloneDelete);
+
   // Do an AJAX post
   ninjaPost(commentURL,{comment: commentTxt.value}).then(function (result) {
-    console.log(result);
-    num++;
-    var newCommentRow = document.getElementsByClassName('newCommentRow')
-    var newCommenter = document.getElementsByClassName('newCommenter')
-    var newCommentText = document.getElementsByClassName('newCommentText')
-    console.log(newCommentRow);
-    console.log(newCommenter);
-    console.log(newCommentText);
-    newCommentText[0].innerHTML = commentTxt.value;
-    var cloneRow = newCommentRow[0]
-        cloneCommenter = newCommenter[0]
-        cloneCommentText = newCommentText[0]
     commentTxt.value = ''
-    $(cloneRow).clone().insertAfter("#dividerDiv").fadeIn("slow")
-    $(cloneCommentText).clone().appendTo(cloneRow).fadeIn("slow")
-    $(cloneCommenter).clone().appendTo(cloneRow).fadeIn("slow")
-    // newCommentRow[0].innerHTML = "shajkdhsjkahdjksahdkjhaskjhdjksahdkjahsk"
-    newCommentRow[0].style.display = "inline-block"
-    newCommenter[1].style.display = "none"
-    newCommentText[1].style.display = "none"
-    $(newCommentRow).first().hide()
-    $(newCommenter).first().hide()
-    $(newCommentText).first().hide()
+    $(deleteButtons[1]).delay(2000).fadeIn(800)
+    deleteButtons[1].addEventListener('click', function (event) {
+      var thisComment = this.parentNode;
+      console.log(thisComment);
+      var deleteHref = thisComment.children[3].value + result.commentId +"/rmc";
+      var confirmation = thisComment.children[4];
+
+      $(confirmation).fadeIn("slow")
+      //yes
+      confirmation.children[0].addEventListener('click', function () {
+        $(thisComment).fadeOut("slow")
+        // Do an AJAX post
+        ninjaPost(deleteHref);
+      })
+
+      //no
+      confirmation.children[1].addEventListener('click', function () {
+        $(this.parentNode).fadeOut("slow")
+      })
+    })
   });
 });
-
 
 //check for likedHidden field
 if(document.getElementById("likedHidden")){
@@ -124,7 +136,8 @@ if (document.getElementsByClassName('delete')){
   var no = document.getElementsByClassName('confirm-no')
   var commentItem = document.getElementsByClassName('commentList')
 
-  for (var i = 0; i < commentItem.length; i++) {
+  for (var i = 0; i < deleteButtons.length; i++) {
+
     deleteButtons[i].addEventListener('click', function (event) {
       var thisComment = this.parentNode;
       var deleteHref = thisComment.children[3].value;

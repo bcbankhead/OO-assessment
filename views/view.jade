@@ -32,7 +32,12 @@ block content
       #newComment
         .newCommentRow
           .newCommenter #{user}
+          .deleteButton X
           .newCommentText          
+          input(type = 'hidden' value="/comment/"+id+"/"+artData._id+"/" class="delete")
+          .confirm Remove Comment?:
+            .confirm-yes yes
+            .confirm-no no
       #dividerDiv
       each item, i in artData.artworkComments
         .commentList

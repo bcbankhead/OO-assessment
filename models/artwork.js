@@ -6,6 +6,7 @@ var artworkSchema = new mongoose.Schema({
                     artworkArtist: String,
                     artworkURL: String,
                     artworkNote: String,
+                    commentCt: Number,
                     artworkComments: Array,
                     likedby: Array
                   });

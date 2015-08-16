@@ -103,9 +103,22 @@ a {
   width:100px;
   height:150px;
   background-color: rgb(255, 255, 255);
-  border: 1px solid black;
   box-sizing: border-box;
 }
+
+.shade {
+  cursor:pointer;
+  width:100px;
+  height:150px;
+  background-color: rgba(255, 255, 255, 0);
+  border: 1px solid black;
+  box-sizing: border-box;
+  -webkit-transition: all 500ms cubic-bezier(0.000, 0.000, 0.055, 1.000);
+   -moz-transition: all 500ms cubic-bezier(0.000, 0.000, 0.055, 1.000);
+     -o-transition: all 500ms cubic-bezier(0.000, 0.000, 0.055, 1.000);
+        transition: all 500ms cubic-bezier(0.000, 0.000, 0.055, 1.000); /* custom */
+}
+
 
 .thumbNail:hover {
   float:left;
@@ -113,9 +126,17 @@ a {
   width:100px;
   height:150px;
   background-color: rgb(255, 255, 255);
-  border: 3px solid red;
   box-sizing: border-box;
 }
+
+.thumbNail:hover .shade{
+  width:100px;
+  height:150px;
+  border: 1px solid red;
+  background-color: rgba(255, 255, 255, .75);
+  box-sizing: border-box;
+}
+
 
 .thumbNailLink {
   display:inline-block;
@@ -486,6 +507,20 @@ margin-right:10px;
   transition: all .3s ease;
 }
 
+.disabledDelete {
+  border:1px solid black;
+  text-align: center;
+  cursor: pointer;
+  width:18px;
+  height:15px;
+  display:inline-block;
+  background-color: rgb(180, 180, 180);
+  font-size: 14px;
+  height:18px;
+  color: rgb(180, 0, 0);
+  transition: all .8s ease;
+}
+
 .commenter {
   border:0px solid black;
   display:inline-block;
@@ -501,7 +536,7 @@ margin-right:10px;
 }
 
 .commentList {
-  border:1px solid black;
+  border:0px solid black;
   margin-bottom:15px;
 }
 
@@ -510,13 +545,14 @@ margin-right:10px;
 }
 
 .newCommentRow {
-  border: 1px solid black;
+  border: 0px solid black;
   display:none;
   margin-bottom:15px;
 }
 
 .newComment {
-  border:0px solid black;
+  font-size: 12px;
+  color: #888;
 }
 
 .newCommentText {
@@ -525,9 +561,10 @@ margin-right:10px;
   color: #888;
 }
 
-
 .newCommenter {
-  border:0px solid black;
+  border:1px solid white;
+  display:inline-block;
+
   width:227px;
   font-size: 14px;
   height:18px;
@@ -567,6 +604,6 @@ margin-right:10px;
 
 #dividerDiv {
   display:inline-block;
-  border:1px solid black;
+  border:0px solid black;
   width: 220px;
 }

@@ -146,7 +146,6 @@ router.get('/delete/:id/:artId', function (req, res, next) {
 
 //Comment
 router.post('/comment/:id/:artId', function (req, res, next) {
-  console.log(req.body);
   var id = req.params.id;
   var artId = req.params.artId;
   var comment = req.body.comment;
@@ -155,7 +154,9 @@ router.post('/comment/:id/:artId', function (req, res, next) {
     var commenter = dataset.data.username;
     var liked = functions.isLiked(dataset.data.liked,artId);
     functions.writeComment(id,commenter,comment,artId,db.Artwork).then(function (result) {
-      res.json(result);
+      console.log(result);
+      var commentId = { commentId : result.artworkComments[0].commentId }
+      res.json(commentId);
     })
   })
 });
@@ -165,7 +166,6 @@ router.post('/comment/:id/:artId/:cId/rmc', function (req, res, next) {
     res.json({})
   })
 });
-
 
 router.post('/:id/:artId/like/', function (req, res, next) {
   var id = req.params.id;
