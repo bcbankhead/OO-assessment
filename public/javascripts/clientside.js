@@ -5,15 +5,12 @@ window.addEventListener('DOMContentLoaded', function () {
       main.style.height = window.innerHeight + "px";
       content.style.height = (window.innerHeight - 150) + "px";
       content.style.overflow = "scroll";
-      console.log(main);
-      console.log(content);
 });
 
 //update artwork preview div
 if (document.getElementById('artworkURL')){
   var url = document.getElementById('artworkURL')
   url.addEventListener('blur', function () {
-    console.log("clicked");
     var thumb = document.getElementById('featuredNew');
     thumb.style.backgroundImage = 'url('+ url.value + ')';
     thumb.style.backgroundSize = '220px 420px';
@@ -23,7 +20,6 @@ if (document.getElementById('artworkURL')){
 
 //ajax NINJA
 var ninjaPost = function (url,data) {
-  console.log("wtf");
   var payload = {}
       payload.type = "POST";
       payload.url = url;
@@ -49,8 +45,6 @@ $('#postComment').on('click', function(e) {
       cloneDelete = deleteButtons[1]
       $(deleteButtons[0]).hide()
   $(cloneRow).clone().insertAfter("#dividerDiv").fadeIn("slow")
-  console.log(deleteButtons[1]);
-  console.log(cloneDelete);
 
   // Do an AJAX post
   ninjaPost(commentURL,{comment: commentTxt.value}).then(function (result) {
@@ -58,7 +52,6 @@ $('#postComment').on('click', function(e) {
     $(deleteButtons[1]).delay(2000).fadeIn(800)
     deleteButtons[1].addEventListener('click', function (event) {
       var thisComment = this.parentNode;
-      console.log(thisComment);
       var deleteHref = thisComment.children[3].value + result.commentId +"/rmc";
       var confirmation = thisComment.children[4];
 
