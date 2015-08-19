@@ -24,6 +24,7 @@ var ninjaPost = function (url,data) {
       payload.type = "POST";
       payload.url = url;
   if(data){
+      //payload.datatype = "JSON"; investigate this
       payload.data = data
   }
   return $.ajax(payload)
@@ -32,6 +33,10 @@ var ninjaPost = function (url,data) {
 $('#postComment').on('click', function(e) {
   // Stop the browser from doing anything else
   e.preventDefault();
+
+  // commentUrl = document.querySelector('[data-placeholder=comment-url]')
+  // $('[data-placeholder=whatevs]')
+
   var commentURL = document.getElementById('commentURL').value
   var commentTxt = document.getElementById('inputComment')
   var newCommentRow = document.getElementsByClassName('newCommentRow')
@@ -151,3 +156,14 @@ if (document.getElementsByClassName('delete')){
     })
   }
 }
+
+// return new Promise(function (resolve, reject) {
+//   var xhr = new XMLHttprequest
+//   xhr.open()
+//   xhr.onload = function () {
+//     // if an error happens, reject()
+//     // if the status code is not 200, reject()
+//     resolve(xhr.response)
+//   }
+//   xhr.send() //<-- optionally sending the post data as a querystring
+// })

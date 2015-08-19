@@ -48,7 +48,7 @@ router.post('/login', function (req, res, next) {
         .then( function (dataset) {
           var id = dataset.data._id;
           res.redirect('/profiles/'+ id);
-        });
+        }); 
     } else if (result.status === 'failed') {
       res.render('login', {page: 'none', message: "Username or password incorrect."})
     }
