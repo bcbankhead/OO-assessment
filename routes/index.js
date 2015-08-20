@@ -2,8 +2,8 @@ var express = require('express');
 var bcrypt = require('bcryptjs');
 var router = express.Router();
 
-var db = require("../models");
 var functions = require('../lib/serverside.js');
+var dbFunctions = require('../lib/dbFunctions.js');
 /* GET home page. */
 
 var checkUser = function (req, res, next) {
@@ -25,6 +25,7 @@ router.get('/new/:id', function (req, res, next) {
 
 router.post('/new/:id', function (req, res, next) {
   var id = req.params.id;
+  console.log(id);
   functions.new(id,req.body.artworkName,req.body.artworkArtist,req.body.artworkURL,req.body.artworkNote)
   .then(function (result) {
     res.redirect('/profiles/'+ id);
@@ -39,16 +40,16 @@ router.post('/login', function (req, res, next) {
   var currentUser = functions.toProperCase(req.body.userName);
   req.session.user = currentUser;
 
-  functions.findUser(currentUser,req.body.password,db.Users)
+  dbFunctions.findUser(currentUser,req.body.password)
   .then( function (result) {
     if (result.status === 'not found') {
       res.render('login', {currentUser: currentUser, message: "No login found for user: " + currentUser})
     } else if (result.status === 'passed') {
-        functions.findUser(currentUser,req.body.password,db.Users)
+        dbFunctions.findUser(currentUser,req.body.password)
         .then( function (dataset) {
           var id = dataset.data._id;
           res.redirect('/profiles/'+ id);
-        }); 
+        });
     } else if (result.status === 'failed') {
       res.render('login', {page: 'none', message: "Username or password incorrect."})
     }
@@ -97,8 +98,8 @@ router.post('/signup', function (req, res, next) {
 
 router.get('/profiles/:id', function (req, res, next) {
   var id = req.params.id
-  functions.findProfile(id,db.Users).then( function (dataset) {
-    functions.profileArt(db.Artwork,dataset.urls).then(function (urls) {
+  dbFunctions.findProfile(id).then( function (dataset) {
+    dbFunctions.profileArt(dataset.urls).then(function (urls) {
       var result = functions.combiner(dataset.data,urls)
       res.render('profiles', { page: 'profile', id: id, data: result });
     })
@@ -110,9 +111,9 @@ router.get('/profiles/:id', function (req, res, next) {
 router.get('/view/:id/:artId', function (req, res, next) {
   var id = req.params.id;
   var artId = req.params.artId;
-  functions.findProfile(id,db.Users).then( function (dataset) {
-    var liked = functions.isLiked(dataset.data.liked,artId)
-    functions.findArtwork(artId,db.Artwork).then( function (artData) {
+  dbFunctions.findProfile(id).then( function (dataset) {
+    var liked = dbFunctions.isLiked(dataset.data.liked,artId)
+    dbFunctions.findArtwork(artId).then( function (artData) {
     res.render('view', { page: 'view', user: req.session.user, id: id, liked: liked, artData: artData });
     })
   })
@@ -121,9 +122,9 @@ router.get('/view/:id/:artId', function (req, res, next) {
 router.get('/edit/:id/:artId', function (req, res, next) {
   var id = req.params.id;
   var artId = req.params.artId;
-  functions.findProfile(id,db.Users).then( function (dataset) {
-    var liked = functions.isLiked(dataset.data.liked,artId)
-    functions.findArtwork(artId,db.Artwork).then( function (artData) {
+  dbFunctions.findProfile(id).then( function (dataset) {
+    var liked = dbFunctions.isLiked(dataset.data.liked,artId)
+    dbFunctions.findArtwork(artId).then( function (artData) {
     res.render('edit', { page: 'view', id: id, liked: liked, artData: artData });
     })
   })
@@ -137,10 +138,9 @@ router.post('/edit/:id/:artId', function (req, res, next) {
 });
 
 router.get('/delete/:id/:artId', function (req, res, next) {
-  var id = req.params.id;
-  var artId = req.params.artId;
-  functions.removeArtwork(id,artId,db.Artwork,db.Users).then( function (artData) {
-  res.redirect('/profiles/'+ id);
+  dbFunctions.removeArtwork(req.params.id,req.params.artId).then( function (artData) {
+    console.log(artData);
+  res.redirect('/profiles/'+ req.params.id);
   })
 });
 
@@ -150,11 +150,10 @@ router.post('/comment/:id/:artId', function (req, res, next) {
   var artId = req.params.artId;
   var comment = req.body.comment;
   //refactor
-  functions.findProfile(id,db.Users).then( function (dataset) {
+  dbFunctions.findProfile(id).then( function (dataset) {
     var commenter = dataset.data.username;
-    var liked = functions.isLiked(dataset.data.liked,artId);
-    functions.writeComment(id,commenter,comment,artId,db.Artwork).then(function (result) {
-      console.log(result);
+    var liked = dbFunctions.isLiked(dataset.data.liked,artId);
+    dbFunctions.writeComment(id,commenter,comment,artId).then(function (result) {
       var commentId = { commentId : result.artworkComments[0].commentId }
       res.json(commentId);
     })
@@ -162,7 +161,9 @@ router.post('/comment/:id/:artId', function (req, res, next) {
 });
 
 router.post('/comment/:id/:artId/:cId/rmc', function (req, res, next) {
-  functions.removeComment(req.params.id,req.params.artId,req.params.cId).then(function (result) {
+  console.log(req.params.id,req.params.artId,req.params.cId);
+  dbFunctions.removeComment(req.params.id,req.params.artId,req.params.cId).then(function (result) {
+    console.log(result);
     res.json({})
   })
 });
@@ -170,9 +171,9 @@ router.post('/comment/:id/:artId/:cId/rmc', function (req, res, next) {
 router.post('/:id/:artId/like/', function (req, res, next) {
   var id = req.params.id;
   var artId = req.params.artId;
-  functions.findProfile(id,db.Users).then( function (dataset) {
+  dbFunctions.findProfile(id).then( function (dataset) {
     var user = dataset.data.username;
-    functions.addLike(id,user,artId,db.Users,db.Artwork).then( function (result) {
+    functions.addLike(id,user,artId).then( function (result) {
       console.log("here1");
       console.log(result);
       res.json(result);
@@ -183,9 +184,9 @@ router.post('/:id/:artId/like/', function (req, res, next) {
 router.post('/:id/:artId/unlike/', function (req, res, next) {
   var id = req.params.id;
   var artId = req.params.artId;
-  functions.findProfile(id,db.Users).then( function (dataset) {
+  dbFunctions.findProfile(id).then( function (dataset) {
     var user = dataset.data.username;
-    functions.removeLike(id,user,artId,db.Users,db.Artwork).then( function (result) {
+    functions.removeLike(id,user,artId).then( function (result) {
       console.log("here2");
       console.log(result);
       res.json(result);
@@ -196,15 +197,15 @@ router.post('/:id/:artId/unlike/', function (req, res, next) {
 
 router.get('/gallery/:id', function (req, res, next) {
   var id = req.params.id
-  functions.gallery(db.Artwork).then( function (dataset) {
+  dbFunctions.gallery().then( function (dataset) {
     res.render('gallery', { page: 'gallery', id: id, data: dataset });
   })
 })
 
 router.get('/favorites/:id', function (req, res, next) {
   var id = req.params.id
-  functions.findProfile(id,db.Users).then( function (dataset) {
-    functions.favorites(db.Artwork, dataset.data.liked,id).then( function (artData) {
+  dbFunctions.findProfile(id).then( function (dataset) {
+    dbFunctions.favorites(dataset.data.liked,id).then( function (artData) {
       res.render('gallery', { page: 'favorites', id: id, data: artData });
     })
   })

@@ -126,7 +126,8 @@ if(document.getElementsByClassName('userArtwork')){
 }
 
 //create delete button array
-if (document.getElementsByClassName('delete')){
+if (document.getElementsByClassName('commentList')[0]){
+  console.log("WTF");
   var dele = document.getElementsByClassName('delete');
   var deleteButtons = document.getElementsByClassName('deleteButton');
   var confirmations = document.getElementsByClassName('confirm')
