@@ -6,6 +6,7 @@ var functions = require('../lib/serverside.js');
 var dbFunctions = require('../lib/dbFunctions.js');
 /* GET home page. */
 
+
 var checkUser = function (req, res, next) {
   if(req.session.user) {
     next();

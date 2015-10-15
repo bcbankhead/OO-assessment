@@ -3,17 +3,19 @@ var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
+var cookieSession = require('cookie-session')
 var bodyParser = require('body-parser');
 require('dotenv').load();
 var routes = require('./routes/index');
 var users = require('./routes/users');
+
 
 var key1 = (process.env.KEY1);
 var key2 = (process.env.KEY2);
 var key3 = (process.env.KEY3);
 
 var app = express();
-var cookieSession = require('cookie-session')
+
 
 //cookie setup
 app.enable('trust proxy')
@@ -30,6 +32,7 @@ app.set('view engine', 'jade');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
+
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -74,6 +77,10 @@ if (app.get('env') === 'development') {
   });
 }
 
+if (app.get('env') === 'production') {
+  app.listen(3000);
+}
+
 // production error handler
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
@@ -83,6 +90,5 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
-
 
 module.exports = app;

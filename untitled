@@ -1,0 +1,69 @@
+//Write syntactically valid ajax calls using `$.ajax ` as well as the shortcut `get()` and `post()`	Submit
+
+//Show in 002 project on client side, did not use .get() or .post() short hand (instead included in the payload,
+//but quick research shows syntax to be:
+
+//how I'm doing it now
+var payload = {
+    payload.type: "POST",
+    payload.url: url,
+    payload.data: data,
+    payload.success: success,
+    payload.dataType: dataType
+  }
+$.ajax(payload);
+
+//refactor to this, for easier reading/identifying POST or GET at first glance.
+var payload = {
+    payload.url: url,
+    payload.data: data
+  }
+$.post(payload)
+
+
+//Describe what is happening when $.ajax is invoked
+
+$.ajax performs an HTTP request to the server with the specified action, as if the user had traversed the route themselves.
+
+
+//Write ajax calls that send form parameters from an object
+$.ajax({
+  type: "POST",
+  url: url,
+  data: { name: document.getElementById("formInputName").value, age: document.getElementById("formInputAge").value }
+});
+
+would be an example if directly accessing DOM objects to get their values on a POST request.
+
+
+//Write ajax calls that send the request body as JSON
+
+I thought all requests are sent as strings and parsed on the receiving end as a JSON object?
+
+$.ajax({
+  type: "POST",
+  url: url,
+  data: { name: document.getElementById("formInputName").value, age: document.getElementById("formInputAge").value },
+  success: success,
+  dataType: dataType
+});
+
+
+//Explain the purpose and value of promises in the context of AJAX
+
+Returning a promise from an ajax request is badass, and it should be done:
+  1) it notifies the browser of a successful completion of said call
+  2) allows client side to be updated with new information if there is a result needed from the request
+  3) will insure synchronous transactions of said data so that it can be used when it's actually available
+
+//Use promises to handle successful and unsuccessful AJAX requests
+
+I used promises to handle successful transaction, however I will need to write in code for error handling.
+
+  1) error cases: invalid url (for example, an injected character)
+                  server shuts off between post and response
+
+//Use jQuery AJAX methods to hit an api and use the returned JSON to populate information on an web page	Submit
+
+  If I consider my own server as an api, I did this with the return of the comment ID in order for users to delete
+  a comment directly after posting it.
