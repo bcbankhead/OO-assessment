@@ -2,6 +2,7 @@ var express = require('express');
 var bcrypt = require('bcryptjs');
 var router = express.Router();
 
+var db = require("../lib/models");
 var functions = require('../lib/serverside.js');
 var dbFunctions = require('../lib/dbFunctions.js');
 /* GET home page. */
@@ -87,7 +88,7 @@ router.post('/signup', function (req, res, next) {
         functions.newUser(currentUser,password,db.Users)
         .then( function () {
           req.session.user = currentUser;
-          functions.findUser(currentUser,password,db.Users)
+          dbFunctions.findUser(currentUser,password,db.Users)
           .then( function (dataset) {
             var id = dataset.data._id;
             res.redirect('/profiles/'+ id);
